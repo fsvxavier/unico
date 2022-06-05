@@ -3,13 +3,7 @@
 vendor/
 .idea
 debug
-fmtcoverage.html
-cover.out
-coverage.out
-cover.html
 .scannerwork
 .history
 go.sum
 */env.json
-bin/
-bridges
