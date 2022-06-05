@@ -1,0 +1,353 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "contact": {}
+    },
+    "paths": {
+        "/feiralivre/create": {
+            "put": {
+                "description": "FeiraLivre API",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "FeiraLivre",
+                "parameters": [
+                    {
+                        "description": "body request",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.FeiraLivre"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseSuccess"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
+        "/feiralivre/delete": {
+            "delete": {
+                "description": "FeiraLivre API",
+                "summary": "FeiraLivre",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id to delete",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.FeiraLivre"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
+        "/feiralivre/getbyid": {
+            "get": {
+                "description": "FeiraLivre API",
+                "summary": "FeiraLivre",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id to search",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.FeiraLivre"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
+        "/feiralivre/getdiversbyids": {
+            "get": {
+                "description": "FeiraLivre API",
+                "summary": "FeiraLivre",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ids to search 1-2-3",
+                        "name": "ids",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.FeiraLivre"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
+        "/feiralivre/search": {
+            "post": {
+                "description": "FeiraLivre API",
+                "summary": "FeiraLivre",
+                "parameters": [
+                    {
+                        "description": "body request",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.SearchFeiraLivre"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.FeiraLivre"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
+        "/feiralivre/update": {
+            "put": {
+                "description": "FeiraLivre API",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "FeiraLivre",
+                "parameters": [
+                    {
+                        "description": "body request",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.FeiraLivre"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseSuccess"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        },
+        "/health": {
+            "get": {
+                "description": "HealthCheck API",
+                "summary": "HealthCheck",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.HealthCheck"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "models.FeiraLivre": {
+            "type": "object",
+            "properties": {
+                "areap": {
+                    "type": "integer"
+                },
+                "bairro": {
+                    "type": "string"
+                },
+                "coddist": {
+                    "type": "integer"
+                },
+                "codsubpref": {
+                    "type": "integer"
+                },
+                "distrito": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "lat": {
+                    "type": "integer"
+                },
+                "logradouro": {
+                    "type": "string"
+                },
+                "longi": {
+                    "type": "integer"
+                },
+                "nome_feira": {
+                    "type": "string"
+                },
+                "numero": {
+                    "type": "string"
+                },
+                "referencia": {
+                    "type": "string"
+                },
+                "regiao5": {
+                    "type": "string"
+                },
+                "regiao8": {
+                    "type": "string"
+                },
+                "registro": {
+                    "type": "string"
+                },
+                "setcens": {
+                    "type": "integer"
+                },
+                "subprefe": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.HealthCheck": {
+            "type": "object",
+            "properties": {
+                "dbUP": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.Meta": {
+            "type": "object",
+            "properties": {
+                "limit": {
+                    "type": "integer"
+                },
+                "offset": {
+                    "type": "integer"
+                },
+                "recordCount": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.ResponseError": {
+            "type": "object",
+            "properties": {
+                "developerMessage": {
+                    "type": "string"
+                },
+                "errorCode": {
+                    "type": "integer"
+                },
+                "moreInfo": {
+                    "type": "string"
+                },
+                "userMessage": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.ResponseSuccess": {
+            "type": "object",
+            "properties": {
+                "meta": {
+                    "$ref": "#/definitions/models.Meta"
+                },
+                "records": {}
+            }
+        },
+        "models.SearchFeiraLivre": {
+            "type": "object",
+            "properties": {
+                "bairro": {
+                    "type": "string"
+                },
+                "distrito": {
+                    "type": "string"
+                },
+                "nome_feira": {
+                    "type": "string"
+                },
+                "regiao5": {
+                    "type": "string"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "Authorization": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    }
+}

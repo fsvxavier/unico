@@ -1,0 +1,229 @@
+definitions:
+  models.FeiraLivre:
+    properties:
+      areap:
+        type: integer
+      bairro:
+        type: string
+      coddist:
+        type: integer
+      codsubpref:
+        type: integer
+      distrito:
+        type: string
+      id:
+        type: integer
+      lat:
+        type: integer
+      logradouro:
+        type: string
+      longi:
+        type: integer
+      nome_feira:
+        type: string
+      numero:
+        type: string
+      referencia:
+        type: string
+      regiao5:
+        type: string
+      regiao8:
+        type: string
+      registro:
+        type: string
+      setcens:
+        type: integer
+      subprefe:
+        type: string
+    type: object
+  models.HealthCheck:
+    properties:
+      dbUP:
+        type: string
+      status:
+        type: string
+    type: object
+  models.Meta:
+    properties:
+      limit:
+        type: integer
+      offset:
+        type: integer
+      recordCount:
+        type: integer
+    type: object
+  models.ResponseError:
+    properties:
+      developerMessage:
+        type: string
+      errorCode:
+        type: integer
+      moreInfo:
+        type: string
+      userMessage:
+        type: string
+    type: object
+  models.ResponseSuccess:
+    properties:
+      meta:
+        $ref: '#/definitions/models.Meta'
+      records: {}
+    type: object
+  models.SearchFeiraLivre:
+    properties:
+      bairro:
+        type: string
+      distrito:
+        type: string
+      nome_feira:
+        type: string
+      regiao5:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /feiralivre/create:
+    put:
+      consumes:
+      - application/json
+      description: FeiraLivre API
+      parameters:
+      - description: body request
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/models.FeiraLivre'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseSuccess'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: FeiraLivre
+  /feiralivre/delete:
+    delete:
+      description: FeiraLivre API
+      parameters:
+      - description: id to delete
+        in: query
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.FeiraLivre'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: FeiraLivre
+  /feiralivre/getbyid:
+    get:
+      description: FeiraLivre API
+      parameters:
+      - description: id to search
+        in: query
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.FeiraLivre'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: FeiraLivre
+  /feiralivre/getdiversbyids:
+    get:
+      description: FeiraLivre API
+      parameters:
+      - description: ids to search 1-2-3
+        in: query
+        name: ids
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.FeiraLivre'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: FeiraLivre
+  /feiralivre/search:
+    post:
+      description: FeiraLivre API
+      parameters:
+      - description: body request
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/models.SearchFeiraLivre'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.FeiraLivre'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: FeiraLivre
+  /feiralivre/update:
+    put:
+      consumes:
+      - application/json
+      description: FeiraLivre API
+      parameters:
+      - description: body request
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/models.FeiraLivre'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ResponseSuccess'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: FeiraLivre
+  /health:
+    get:
+      description: HealthCheck API
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.HealthCheck'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+      summary: HealthCheck
+securityDefinitions:
+  Authorization:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

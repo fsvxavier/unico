@@ -1,0 +1,1058 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>handlers: Go Coverage Report</title>
+		<style>
+			body {
+				background: black;
+				color: rgb(80, 80, 80);
+			}
+			body, pre, #legend span {
+				font-family: Menlo, monospace;
+				font-weight: bold;
+			}
+			#topbar {
+				background: black;
+				position: fixed;
+				top: 0; left: 0; right: 0;
+				height: 42px;
+				border-bottom: 1px solid rgb(80, 80, 80);
+			}
+			#content {
+				margin-top: 50px;
+			}
+			#nav, #legend {
+				float: left;
+				margin-left: 10px;
+			}
+			#legend {
+				margin-top: 12px;
+			}
+			#nav {
+				margin-top: 10px;
+			}
+			#legend span {
+				margin: 0 5px;
+			}
+			.cov0 { color: rgb(192, 0, 0) }
+.cov1 { color: rgb(128, 128, 128) }
+.cov2 { color: rgb(116, 140, 131) }
+.cov3 { color: rgb(104, 152, 134) }
+.cov4 { color: rgb(92, 164, 137) }
+.cov5 { color: rgb(80, 176, 140) }
+.cov6 { color: rgb(68, 188, 143) }
+.cov7 { color: rgb(56, 200, 146) }
+.cov8 { color: rgb(44, 212, 149) }
+.cov9 { color: rgb(32, 224, 152) }
+.cov10 { color: rgb(20, 236, 155) }
+
+		</style>
+	</head>
+	<body>
+		<div id="topbar">
+			<div id="nav">
+				<select id="files">
+				
+				<option value="file0">github.com/fsvxavier/unico/api/handlers/feiraLivre.go (7.1%)</option>
+				
+				<option value="file1">github.com/fsvxavier/unico/api/handlers/health.go (100.0%)</option>
+				
+				<option value="file2">github.com/fsvxavier/unico/api/server.go (70.0%)</option>
+				
+				<option value="file3">github.com/fsvxavier/unico/middlewares/cors.go (100.0%)</option>
+				
+				<option value="file4">github.com/fsvxavier/unico/middlewares/logger.go (100.0%)</option>
+				
+				<option value="file5">github.com/fsvxavier/unico/repositories/feiraLivreRepository.go (91.9%)</option>
+				
+				<option value="file6">github.com/fsvxavier/unico/repositories/healthRepository.go (100.0%)</option>
+				
+				<option value="file7">github.com/fsvxavier/unico/usecases/feiraLivreUseCase.go (84.0%)</option>
+				
+				<option value="file8">github.com/fsvxavier/unico/usecases/healthUseCase.go (100.0%)</option>
+				
+				</select>
+			</div>
+			<div id="legend">
+				<span>not tracked</span>
+			
+				<span class="cov0">not covered</span>
+				<span class="cov8">covered</span>
+			
+			</div>
+		</div>
+		<div id="content">
+		
+		<pre class="file" id="file0" style="display: none">package handlers
+
+import (
+        "encoding/json"
+        "fmt"
+        "io/ioutil"
+        "net/http"
+        "strconv"
+        "strings"
+
+        "github.com/fsvxavier/unico/config"
+        "github.com/fsvxavier/unico/interfaces"
+        "github.com/fsvxavier/unico/models"
+        "github.com/fsvxavier/unico/utils"
+        "github.com/gin-gonic/gin"
+)
+
+// httpFeiraLivreHandler represent the httphandler for FeiraLivre
+type httpFeiraLivreHandler struct {
+        FLUsecase interfaces.FeiraLivreUseCase
+}
+
+// NewFeiraLivreHTTPHandler ...
+func NewFeiraLivreHTTPHandler(r *gin.RouterGroup, us interfaces.FeiraLivreUseCase) <span class="cov8" title="1">{
+        handler := &amp;httpFeiraLivreHandler{
+                FLUsecase: us,
+        }
+        r.PUT("/feiralivre/create", handler.CreateFeiraLivre)
+        r.PUT("/feiralivre/update", handler.UpdateFeiraLivre)
+        r.POST("/feiralivre/search", handler.SearchFeiraLivre)
+
+        r.DELETE("/feiralivre/delete/", handler.DeleteFeiraLivre)
+        r.GET("/feiralivre/getbyid/", handler.GetByID)
+        r.GET("/feiralivre/getdiversbyids/", handler.GetDiversByiIds)
+}</span>
+
+// @Summary FeiraLivre
+// @Description FeiraLivre API
+// @Param data body models.SearchFeiraLivre true "body request"
+// @Failure 400 {object} models.ResponseError
+// @Success 200 {object} models.FeiraLivre
+// @Router /feiralivre/search [post]
+func (h *httpFeiraLivreHandler) SearchFeiraLivre(c *gin.Context) <span class="cov0" title="0">{
+        var t config.Config
+        logger := new(utils.GenericLogger)
+        logger.Module = "api"
+        logger.GetLogger()
+
+        payload, err := ioutil.ReadAll(c.Request.Body)
+        if err != nil </span><span class="cov0" title="0">{
+                logger.LogIt("ERROR", fmt.Sprintf("[handlers/Send] - Error on read parameters in request. Erro: %s", err.Error()), nil)
+                t.RespondWithError(c, http.StatusInternalServerError, "", "")
+                return
+        }</span>
+
+        <span class="cov0" title="0">var outValuesDefault models.SearchFeiraLivre
+
+        if err := json.Unmarshal([]byte(payload), &amp;outValuesDefault); err != nil </span><span class="cov0" title="0">{
+                logger.LogIt("ERROR", fmt.Sprintf("[handlers/Send] - Error on parse parameters of request. Erro: %s", err.Error()), nil)
+                t.ResponseWithError(c, http.StatusBadRequest, "Error performing analysis of the submitted body: ", err.Error())
+                return
+        }</span>
+
+        <span class="cov0" title="0">hc, err := h.FLUsecase.SearchFeiraLivre(&amp;outValuesDefault)
+
+        if err != nil </span><span class="cov0" title="0">{
+                logger.LogIt("ERROR", fmt.Sprintf("[handlers/Send] - Error on execute Search Handler. Erro: %s", err.Error()), nil)
+                t.RespondWithError(c, http.StatusBadRequest, "Error no FeiraLivre. %s", err.Error())
+                return
+        }</span>
+
+        <span class="cov0" title="0">t.ResponseWithJSON(c, http.StatusOK, hc)</span>
+}
+
+// @Summary FeiraLivre
+// @Description FeiraLivre API
+// @Accept  json
+// @Produce  json
+// @Param data body models.FeiraLivre true "body request"
+// @Success 200 {object} models.ResponseSuccess
+// @Failure 400 {object} models.ResponseError
+// @Router /feiralivre/create [put]
+func (h *httpFeiraLivreHandler) CreateFeiraLivre(c *gin.Context) <span class="cov0" title="0">{
+        var t config.Config
+        logger := new(utils.GenericLogger)
+        logger.Module = "api"
+        logger.GetLogger()
+
+        payload, err := ioutil.ReadAll(c.Request.Body)
+        if err != nil </span><span class="cov0" title="0">{
+                logger.LogIt("ERROR", fmt.Sprintf("[handlers/Send] - Error on read parameters in request. Erro: %s", err.Error()), nil)
+                t.RespondWithError(c, http.StatusInternalServerError, "", "")
+                return
+        }</span>
+
+        <span class="cov0" title="0">var outValuesDefault models.FeiraLivre
+
+        if err := json.Unmarshal([]byte(payload), &amp;outValuesDefault); err != nil </span><span class="cov0" title="0">{
+                logger.LogIt("ERROR", fmt.Sprintf("[handlers/Send] - Error on parse parameters of request. Erro: %s", err.Error()), nil)
+                t.ResponseWithError(c, http.StatusBadRequest, "Error performing analysis of the submitted body: ", err.Error())
+                return
+        }</span>
+
+        <span class="cov0" title="0">ret, err := h.FLUsecase.CreateFeiraLivre(&amp;outValuesDefault)
+
+        if err != nil </span><span class="cov0" title="0">{
+                t.RespondWithError(c, http.StatusBadRequest, "Error no FeiraLivre. %s", err.Error())
+                return
+        }</span>
+
+        <span class="cov0" title="0">t.ResponseWithJSON(c, http.StatusOK, ret)</span>
+}
+
+// @Summary FeiraLivre
+// @Description FeiraLivre API
+// @Accept  json
+// @Produce  json
+// @Param data body models.FeiraLivre true "body request"
+// @Success 200 {object} models.ResponseSuccess
+// @Failure 400 {object} models.ResponseError
+// @Router /feiralivre/update [put]
+func (h *httpFeiraLivreHandler) UpdateFeiraLivre(c *gin.Context) <span class="cov0" title="0">{
+        var t config.Config
+        logger := new(utils.GenericLogger)
+        logger.Module = "api"
+        logger.GetLogger()
+
+        payload, err := ioutil.ReadAll(c.Request.Body)
+        if err != nil </span><span class="cov0" title="0">{
+                logger.LogIt("ERROR", fmt.Sprintf("[handlers/Send] - Error on read parameters in request. Erro: %s", err.Error()), nil)
+                t.RespondWithError(c, http.StatusInternalServerError, "", "")
+                return
+        }</span>
+
+        <span class="cov0" title="0">var outValuesDefault models.FeiraLivre
+
+        if err := json.Unmarshal([]byte(payload), &amp;outValuesDefault); err != nil </span><span class="cov0" title="0">{
+                logger.LogIt("ERROR", fmt.Sprintf("[handlers/Send] - Error on parse parameters of request. Erro: %s", err.Error()), nil)
+                t.ResponseWithError(c, http.StatusBadRequest, "Error performing analysis of the submitted body: ", err.Error())
+                return
+        }</span>
+
+        <span class="cov0" title="0">ret, err := h.FLUsecase.UpdateFeiraLivre(&amp;outValuesDefault)
+
+        if err != nil </span><span class="cov0" title="0">{
+                t.RespondWithError(c, http.StatusBadRequest, "Error no FeiraLivre. %s", err.Error())
+                return
+        }</span>
+
+        <span class="cov0" title="0">t.ResponseWithJSON(c, http.StatusOK, ret)</span>
+}
+
+// @Summary FeiraLivre
+// @Description FeiraLivre API
+// @Param id query integer true "id to delete"
+// @Failure 400 {object} models.ResponseError
+// @Success 200 {object} models.FeiraLivre
+// @Router /feiralivre/delete [delete]
+func (h *httpFeiraLivreHandler) DeleteFeiraLivre(c *gin.Context) <span class="cov0" title="0">{
+        var t config.Config
+        logger := new(utils.GenericLogger)
+        logger.Module = "api"
+        logger.GetLogger()
+
+        id, _ := strconv.Atoi(c.Query("id"))
+
+        hc, err := h.FLUsecase.DeleteFeiraLivre(int64(id))
+
+        if err != nil </span><span class="cov0" title="0">{
+                logger.LogIt("ERROR", fmt.Sprintf("[handlers/Send] - Error on execute DeleteFeiraLivre Handler. Erro: %s", err.Error()), nil)
+                t.RespondWithError(c, http.StatusBadRequest, "Error no FeiraLivre. %s", err.Error())
+                return
+        }</span>
+
+        <span class="cov0" title="0">t.ResponseWithJSON(c, http.StatusOK, hc)</span>
+}
+
+// @Summary FeiraLivre
+// @Description FeiraLivre API
+// @Param id query integer true "id to search"
+// @Failure 400 {object} models.ResponseError
+// @Success 200 {object} models.FeiraLivre
+// @Router /feiralivre/getbyid [get]
+func (h *httpFeiraLivreHandler) GetByID(c *gin.Context) <span class="cov0" title="0">{
+        var t config.Config
+        logger := new(utils.GenericLogger)
+        logger.Module = "api"
+        logger.GetLogger()
+
+        id, _ := strconv.Atoi(c.Query("id"))
+
+        hc, err := h.FLUsecase.GetByID(int64(id))
+
+        if err != nil </span><span class="cov0" title="0">{
+                logger.LogIt("ERROR", fmt.Sprintf("[handlers/Send] - Error on execute GetByID Handler. Erro: %s", err.Error()), nil)
+                t.RespondWithError(c, http.StatusBadRequest, "Error no FeiraLivre. %s", err.Error())
+                return
+        }</span>
+
+        <span class="cov0" title="0">t.ResponseWithJSON(c, http.StatusOK, hc)</span>
+}
+
+// @Summary FeiraLivre
+// @Description FeiraLivre API
+// @Param ids query string true "ids to search 1-2-3"
+// @Failure 400 {object} models.ResponseError
+// @Success 200 {object} models.FeiraLivre
+// @Router /feiralivre/getdiversbyids [get]
+func (h *httpFeiraLivreHandler) GetDiversByiIds(c *gin.Context) <span class="cov0" title="0">{
+        var t config.Config
+        logger := new(utils.GenericLogger)
+        logger.Module = "api"
+        logger.GetLogger()
+
+        id := strings.Replace(c.Query("ids"), "-", ",", -1)
+
+        hc, err := h.FLUsecase.GetAllByIds(id)
+
+        if err != nil </span><span class="cov0" title="0">{
+                logger.LogIt("ERROR", fmt.Sprintf("[handlers/Send] - Error on execute GetAllByIds Handler. Erro: %s", err.Error()), nil)
+                t.RespondWithError(c, http.StatusBadRequest, "Error no FeiraLivre. %s", err.Error())
+                return
+        }</span>
+
+        <span class="cov0" title="0">t.ResponseWithJSON(c, http.StatusOK, hc)</span>
+}
+</pre>
+		
+		<pre class="file" id="file1" style="display: none">package handlers
+
+import (
+        "net/http"
+
+        "github.com/fsvxavier/unico/config"
+        "github.com/fsvxavier/unico/interfaces"
+        "github.com/gin-gonic/gin"
+)
+
+// httpHealthCheckHandler represent the httphandler for healthcheck
+type httpHealthCheckHandler struct {
+        HUsecase interfaces.HealthCheckUseCase
+}
+
+// NewHealthCheckHTTPHandler ...
+func NewHealthCheckHTTPHandler(r *gin.RouterGroup, us interfaces.HealthCheckUseCase) <span class="cov8" title="1">{
+        handler := &amp;httpHealthCheckHandler{
+                HUsecase: us,
+        }
+        r.GET("/health", handler.HealthCheck)
+        r.GET("/", handler.HealthCheck)
+}</span>
+
+// @Summary HealthCheck
+// @Description HealthCheck API
+// @Failure 400 {object} models.ResponseError
+// @Success 200 {object} models.HealthCheck
+// @Router /health [get]
+func (h *httpHealthCheckHandler) HealthCheck(c *gin.Context) <span class="cov8" title="1">{
+        var t config.Config
+        hc, err := h.HUsecase.Check()
+
+        if err != nil </span><span class="cov8" title="1">{
+                t.RespondWithError(c, http.StatusBadRequest, "Error no healthcheck. %s", err.Error())
+                return
+        }</span>
+
+        <span class="cov8" title="1">hc.Status = "up"
+        t.ResponseWithJSON(c, http.StatusOK, hc)</span>
+}
+</pre>
+		
+		<pre class="file" id="file2" style="display: none">package api
+
+import (
+        "database/sql"
+        "fmt"
+        "log"
+
+        "net/http"
+        "os"
+        "strconv"
+        "time"
+
+        "github.com/fsvxavier/unico/api/handlers"
+        "github.com/fsvxavier/unico/docs"
+        "github.com/fsvxavier/unico/middlewares"
+        "github.com/fsvxavier/unico/repositories"
+        "github.com/fsvxavier/unico/usecases"
+        "github.com/fsvxavier/unico/utils"
+        "github.com/gin-contrib/gzip"
+        "github.com/gin-gonic/gin"
+        swaggerFiles "github.com/swaggo/files"
+        ginSwagger "github.com/swaggo/gin-swagger"
+)
+
+//Server ...
+type Server struct {
+        Logger       utils.GenericLogger
+        DBConnMySQL  *sql.DB
+        Route        *gin.Engine
+        RouteGroupV0 *gin.RouterGroup
+        RouteGroupV1 *gin.RouterGroup
+}
+
+//Initialize the server
+func (s *Server) Initialize() <span class="cov8" title="1">{
+
+        GROUPREQUEST := "/api/" + os.Getenv("VERSION_API")
+
+        // programmatically set swagger info
+        docs.SwaggerInfo.Title = "Unico API"
+        docs.SwaggerInfo.Description = "Aplicação Entrevista."
+        docs.SwaggerInfo.Version = "1.0"
+        docs.SwaggerInfo.Schemes = []string{"http", "https"}
+        docs.SwaggerInfo.BasePath = GROUPREQUEST
+
+        s.Logger.Module = "server"
+        s.Logger.GetLogger()
+        s.Route.Use(gin.Recovery())
+
+        s.Route.Use(gzip.Gzip(gzip.DefaultCompression))
+        s.Route.Use(middlewares.CORS())
+        s.Route.Use(middlewares.Logger(s.Logger.Log.Logger))
+
+        //Initial interfaces.Repository
+        healthCheckRepository := repositories.NewHealthCheckRepository()
+        feiraLivreRepository := repositories.NewMySQLFeiraLivreRepository(s.DBConnMySQL)
+
+        // Initial interfaces.UseCase and inject dependency of repository
+        healthCheckUseCase := usecases.NewHealthCheckUseCase(healthCheckRepository)
+        feiraLivreUseCase := usecases.NewFeiraLivreUseCase(feiraLivreRepository)
+
+        s.RouteGroupV0 = s.Route.Group("/")
+        s.RouteGroupV1 = s.Route.Group(GROUPREQUEST)
+
+        handlers.NewHealthCheckHTTPHandler(s.RouteGroupV0, healthCheckUseCase)
+        handlers.NewFeiraLivreHTTPHandler(s.RouteGroupV1, feiraLivreUseCase)
+
+        s.RouteGroupV0.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
+        //s.Route.NoRoute(utils.EndpointNotFound)
+}</span>
+
+// StartServer start of server
+func (s *Server) StartServer() <span class="cov0" title="0">{
+        s.Initialize()
+
+        // Start Server
+        port, _ := strconv.Atoi(fmt.Sprintf("%v", os.Getenv("PORT")))
+        httpReadTimeout, _ := strconv.Atoi(os.Getenv("HTTP_READ_TIMEOUT"))
+        httpWriteTimeout, _ := strconv.Atoi(os.Getenv("HTTP_WRITE_TIMEOUT"))
+        httpServer := &amp;http.Server{
+                Addr:         fmt.Sprintf(":%d", port),
+                ReadTimeout:  time.Duration(httpReadTimeout) * time.Second,
+                WriteTimeout: time.Duration(httpWriteTimeout) * time.Second,
+                Handler:      s.Route,
+        }
+
+        s.Logger.LogIt("INFO", fmt.Sprintf("Starting Server on port %d", port), nil)
+        if err := httpServer.ListenAndServe(); err != nil </span><span class="cov0" title="0">{
+                log.Println(err.Error())
+                os.Exit(1)
+        }</span>
+}
+</pre>
+		
+		<pre class="file" id="file3" style="display: none">package middlewares
+
+import (
+        "github.com/gin-gonic/gin"
+)
+
+// CORS will handle the CORS middleware
+func CORS() gin.HandlerFunc <span class="cov8" title="1">{
+        return func(c *gin.Context) </span><span class="cov8" title="1">{
+                c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+                c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
+                c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
+                c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT, DELETE")
+
+                if c.Request.Method == "OPTIONS" </span><span class="cov8" title="1">{
+                        c.AbortWithStatus(204)
+                        return
+                }</span>
+
+                <span class="cov8" title="1">c.Next()</span>
+        }
+}
+</pre>
+		
+		<pre class="file" id="file4" style="display: none">package middlewares
+
+import (
+        "bytes"
+        "fmt"
+        "io/ioutil"
+        "math"
+        "time"
+
+        "github.com/fsvxavier/unico/utils"
+        "github.com/gin-gonic/gin"
+        "github.com/sirupsen/logrus"
+)
+
+var timeFormat = "02/Jan/2006:15:04:05 -0700"
+
+// Logger is the logrus logger handler
+func Logger(logger *logrus.Logger) gin.HandlerFunc <span class="cov8" title="1">{
+        return func(c *gin.Context) </span><span class="cov8" title="1">{
+                // other handler can change c.Path so:
+                path := c.Request.URL.Path
+                start := time.Now()
+                c.Next()
+                stop := time.Since(start)
+                latency := int(math.Ceil(float64(stop.Nanoseconds()) / 1000000.0))
+                statusCode := c.Writer.Status()
+                clientIP := c.ClientIP()
+                clientUserAgent := c.Request.UserAgent()
+                referer := c.Request.Referer()
+                dataLength := c.Writer.Size()
+                if dataLength &lt; 0 </span><span class="cov8" title="1">{
+                        dataLength = 0
+                }</span>
+
+                <span class="cov8" title="1">entry := map[string]interface{}{
+                        "http": map[string]interface{}{
+                                "latency":        latency, // time to process
+                                "request_method": c.Request.Method,
+                                "status_code":    statusCode,
+                                "path":           path,
+                        },
+                        "clientIP":   clientIP,
+                        "referer":    referer,
+                        "dataLength": dataLength,
+                        "userAgent":  clientUserAgent,
+                }
+
+                var logger utils.GenericLogger
+                logger.Module = "server"
+                logger.GetLogger()
+
+                if len(c.Errors) &gt; 0 </span><span class="cov8" title="1">{
+                        logger.LogIt("ERROR", c.Errors.ByType(gin.ErrorTypePrivate).String(), entry)
+                }</span> else<span class="cov8" title="1"> {
+
+                        var bodyBytes []byte
+                        if c.Request.Body != nil </span><span class="cov8" title="1">{
+                                bodyBytes, _ = ioutil.ReadAll(c.Request.Body)
+                        }</span>
+                        <span class="cov8" title="1">c.Request.Body = ioutil.NopCloser(bytes.NewBuffer(bodyBytes))
+
+                        msg := fmt.Sprintf("%s - %s [%s] \"%s %d\" %d %s \"%s\" (%dms) - body-send: %v", clientIP, time.Now().Format(timeFormat), c.Request.Method, path, statusCode, dataLength, referer, clientUserAgent, latency, string(bodyBytes))
+
+                        switch code := statusCode; </span>{
+                        case code &gt; 499:<span class="cov8" title="1">
+                                logger.LogIt("ERROR", msg, entry)</span>
+                        case code &gt; 399:<span class="cov8" title="1">
+                                logger.LogIt("WARN", msg, entry)</span>
+                        default:<span class="cov8" title="1">
+                                if path != "/health" </span><span class="cov8" title="1">{
+                                        logger.LogIt("INFO", msg, entry)
+                                }</span>
+                        }
+                }
+        }
+}
+</pre>
+		
+		<pre class="file" id="file5" style="display: none">package repositories
+
+import (
+        "database/sql"
+        "fmt"
+        "strings"
+
+        "github.com/fsvxavier/unico/interfaces"
+        "github.com/fsvxavier/unico/models"
+        "github.com/fsvxavier/unico/utils"
+)
+
+const (
+        defaultCacheExpireSeconds = 3600
+        defaultCacheSizeMB        = 5
+)
+
+var (
+        logger = new(utils.GenericLogger)
+)
+
+type mysqlFeiraLivreRepository struct {
+        Conn *sql.DB
+}
+
+// NewMySQLFeiraLivreRepository exports an interface to arquivoRepository
+func NewMySQLFeiraLivreRepository(Conn *sql.DB) interfaces.FeiraLivreRepository <span class="cov8" title="1">{
+        return &amp;mysqlFeiraLivreRepository{Conn: Conn}
+}</span>
+
+func (r *mysqlFeiraLivreRepository) GetByID(id int64) ([]*models.FeiraLivre, error) <span class="cov8" title="1">{
+
+        rows, err := r.Conn.Query(`SELECT id, longi, lat, setcens, areap, coddist, distrito, codsubpref, subprefe, regiao5, regiao8, nome_feira,
+        registro, logradouro, numero, bairro, referencia
+        FROM feira_livre fl
+        WHERE fl.id = ?`, &amp;id)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov8" title="1">list := make([]*models.FeiraLivre, 0)
+
+        defer rows.Close()
+
+        for rows.Next() </span><span class="cov8" title="1">{
+
+                pa := new(models.FeiraLivre)
+                var (
+                        id         sql.NullInt64
+                        longi      sql.NullInt64
+                        lat        sql.NullInt64
+                        setcens    sql.NullInt64
+                        areap      sql.NullInt64
+                        coddist    sql.NullInt64
+                        distrito   sql.NullString
+                        codsubpref sql.NullInt64
+                        subprefe   sql.NullString
+                        regiao5    sql.NullString
+                        regiao8    sql.NullString
+                        nomeFeira  sql.NullString
+                        registro   sql.NullString
+                        logradouro sql.NullString
+                        numero     sql.NullString
+                        bairro     sql.NullString
+                        referencia sql.NullString
+                )
+
+                err = rows.Scan(&amp;id, &amp;longi, &amp;lat, &amp;setcens, &amp;areap, &amp;coddist, &amp;distrito, &amp;codsubpref, &amp;subprefe, &amp;regiao5, &amp;regiao8, &amp;nomeFeira, &amp;registro, &amp;logradouro,
+                        &amp;numero, &amp;bairro, &amp;referencia)
+                if err != nil </span><span class="cov0" title="0">{
+                        return nil, err
+                }</span>
+
+                <span class="cov8" title="1">pa.ID = id.Int64
+                pa.Longi = longi.Int64
+                pa.Lat = lat.Int64
+                pa.Setcens = setcens.Int64
+                pa.Areap = areap.Int64
+                pa.Coddist = coddist.Int64
+                pa.Distrito = distrito.String
+                pa.Codsubpref = codsubpref.Int64
+                pa.Subprefe = subprefe.String
+                pa.Regiao5 = regiao5.String
+                pa.Regiao8 = regiao8.String
+                pa.NomeFeira = nomeFeira.String
+                pa.Registro = registro.String
+                pa.Logradouro = logradouro.String
+                pa.Numero = numero.String
+                pa.Bairro = bairro.String
+                pa.Referencia = referencia.String
+
+                list = append(list, pa)</span>
+        }
+        <span class="cov8" title="1">return list, nil</span>
+}
+
+//SearchFeiraLivre...
+func (r *mysqlFeiraLivreRepository) SearchFeiraLivre(sFeiras *models.SearchFeiraLivre) ([]*models.FeiraLivre, error) <span class="cov8" title="1">{
+
+        var where []string
+
+        if sFeiras.Distrito != "" </span><span class="cov8" title="1">{
+                where = append(where, "distrito LIKE '%"+sFeiras.Distrito+"%'")
+        }</span>
+
+        <span class="cov8" title="1">if sFeiras.Regiao5 != "" </span><span class="cov8" title="1">{
+                where = append(where, "regiao5 LIKE '%"+sFeiras.Regiao5+"%'")
+        }</span>
+
+        <span class="cov8" title="1">if sFeiras.NomeFeira != "" </span><span class="cov8" title="1">{
+                where = append(where, "nome_feira LIKE '%"+sFeiras.NomeFeira+"%'")
+        }</span>
+
+        <span class="cov8" title="1">if sFeiras.Bairro != "" </span><span class="cov8" title="1">{
+                where = append(where, "bairro LIKE '%"+sFeiras.Bairro+"%'")
+        }</span>
+
+        <span class="cov8" title="1">rows, err := r.Conn.Query(`SELECT id, longi, lat, setcens, areap, coddist, distrito, codsubpref, subprefe, regiao5, regiao8, nome_feira,
+                registro, logradouro, numero, bairro, referencia
+                FROM feira_livre
+                WHERE ` + strings.Join(where, " AND "))
+
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov8" title="1">list := make([]*models.FeiraLivre, 0)
+
+        defer rows.Close()
+
+        for rows.Next() </span><span class="cov8" title="1">{
+
+                pa := new(models.FeiraLivre)
+                var (
+                        id         sql.NullInt64
+                        longi      sql.NullInt64
+                        lat        sql.NullInt64
+                        setcens    sql.NullInt64
+                        areap      sql.NullInt64
+                        coddist    sql.NullInt64
+                        distrito   sql.NullString
+                        codsubpref sql.NullInt64
+                        subprefe   sql.NullString
+                        regiao5    sql.NullString
+                        regiao8    sql.NullString
+                        nomeFeira  sql.NullString
+                        registro   sql.NullString
+                        logradouro sql.NullString
+                        numero     sql.NullString
+                        bairro     sql.NullString
+                        referencia sql.NullString
+                )
+
+                err = rows.Scan(&amp;id, &amp;longi, &amp;lat, &amp;setcens, &amp;areap, &amp;coddist, &amp;distrito, &amp;codsubpref, &amp;subprefe, &amp;regiao5, &amp;regiao8, &amp;nomeFeira, &amp;registro, &amp;logradouro,
+                        &amp;numero, &amp;bairro, &amp;referencia)
+                if err != nil </span><span class="cov0" title="0">{
+                        return nil, err
+                }</span>
+
+                <span class="cov8" title="1">pa.ID = id.Int64
+                pa.Longi = longi.Int64
+                pa.Lat = lat.Int64
+                pa.Setcens = setcens.Int64
+                pa.Areap = areap.Int64
+                pa.Coddist = coddist.Int64
+                pa.Distrito = distrito.String
+                pa.Codsubpref = codsubpref.Int64
+                pa.Subprefe = subprefe.String
+                pa.Regiao5 = regiao5.String
+                pa.Regiao8 = regiao8.String
+                pa.NomeFeira = nomeFeira.String
+                pa.Registro = registro.String
+                pa.Logradouro = logradouro.String
+                pa.Numero = numero.String
+                pa.Bairro = bairro.String
+                pa.Referencia = referencia.String
+
+                list = append(list, pa)</span>
+        }
+        <span class="cov8" title="1">return list, nil</span>
+}
+
+func (r *mysqlFeiraLivreRepository) GetAllByIds(ids string) ([]*models.FeiraLivre, error) <span class="cov8" title="1">{
+        var values []interface{}
+        var where []string
+
+        sliceIds := strings.Split(ids, ",")
+        if len(sliceIds) &gt; 1 </span><span class="cov8" title="1">{
+                where = append(where, "in (?"+strings.Repeat(",?", len(sliceIds)-1)+")")
+                for _, status := range sliceIds </span><span class="cov8" title="1">{
+                        values = append(values, status)
+                }</span>
+        } else<span class="cov8" title="1"> if sliceIds[0] != "" </span><span class="cov8" title="1">{
+                where = append(where, "= ?")
+                values = append(values, sliceIds[0])
+        }</span>
+
+        <span class="cov8" title="1">rows, err := r.Conn.Query(`SELECT id, longi, lat, setcens, areap, coddist, distrito, codsubpref, subprefe, regiao5, regiao8, nome_feira,
+        registro, logradouro, numero, bairro, referencia
+        from feira_livre 
+   where id `+strings.Join(where, "  AND "), values...)
+
+        if err != nil </span><span class="cov8" title="1">{
+                return nil, err
+        }</span>
+
+        <span class="cov8" title="1">list := make([]*models.FeiraLivre, 0)
+
+        defer rows.Close()
+
+        for rows.Next() </span><span class="cov8" title="1">{
+
+                pa := new(models.FeiraLivre)
+                var (
+                        id         sql.NullInt64
+                        longi      sql.NullInt64
+                        lat        sql.NullInt64
+                        setcens    sql.NullInt64
+                        areap      sql.NullInt64
+                        coddist    sql.NullInt64
+                        distrito   sql.NullString
+                        codsubpref sql.NullInt64
+                        subprefe   sql.NullString
+                        regiao5    sql.NullString
+                        regiao8    sql.NullString
+                        nomeFeira  sql.NullString
+                        registro   sql.NullString
+                        logradouro sql.NullString
+                        numero     sql.NullString
+                        bairro     sql.NullString
+                        referencia sql.NullString
+                )
+
+                err = rows.Scan(&amp;id, &amp;longi, &amp;lat, &amp;setcens, &amp;areap, &amp;coddist, &amp;distrito, &amp;codsubpref, &amp;subprefe, &amp;regiao5, &amp;regiao8, &amp;nomeFeira, &amp;registro, &amp;logradouro,
+                        &amp;numero, &amp;bairro, &amp;referencia)
+                if err != nil </span><span class="cov0" title="0">{
+                        return nil, err
+                }</span>
+
+                <span class="cov8" title="1">pa.ID = id.Int64
+                pa.Longi = longi.Int64
+                pa.Lat = lat.Int64
+                pa.Setcens = setcens.Int64
+                pa.Areap = areap.Int64
+                pa.Coddist = coddist.Int64
+                pa.Distrito = distrito.String
+                pa.Codsubpref = codsubpref.Int64
+                pa.Subprefe = subprefe.String
+                pa.Regiao5 = regiao5.String
+                pa.Regiao8 = regiao8.String
+                pa.NomeFeira = nomeFeira.String
+                pa.Registro = registro.String
+                pa.Logradouro = logradouro.String
+                pa.Numero = numero.String
+                pa.Bairro = bairro.String
+                pa.Referencia = referencia.String
+
+                list = append(list, pa)</span>
+        }
+        <span class="cov8" title="1">return list, nil</span>
+}
+
+// CreateFeiraLivre ...
+func (r *mysqlFeiraLivreRepository) CreateFeiraLivre(iFeiras *models.FeiraLivre) (*models.Response, error) <span class="cov8" title="1">{
+
+        statement := fmt.Sprintf(`insert into feira_livre 
+        (        longi, lat, setcens, areap, coddist, distrito, codsubpref, subprefe, regiao5, regiao8, nome_feira, registro,
+                logradouro, numero, bairro, referencia)
+        values                
+        (
+                %d, %d, %d, %d, %d, '%s', %d, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s'
+        )`,
+                iFeiras.Longi, iFeiras.Lat, iFeiras.Setcens, iFeiras.Areap, iFeiras.Coddist, iFeiras.Distrito, iFeiras.Codsubpref,
+                iFeiras.Subprefe, iFeiras.Regiao5, iFeiras.Regiao8, iFeiras.NomeFeira, iFeiras.Registro, iFeiras.Logradouro, iFeiras.Numero,
+                iFeiras.Bairro, iFeiras.Referencia)
+
+        //fmt.Println(query)
+
+        res, err := r.Conn.Exec(statement)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov8" title="1">id, err := res.LastInsertId()
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov8" title="1">iFeiras.ID = id
+
+        ret := models.Response{
+                Status:  "Success",
+                Mensage: fmt.Sprintf("Registro inserido com sucesso com ID: %d", id),
+        }
+
+        return &amp;ret, nil</span>
+
+}
+
+// UpdateFeiraLivre ...
+func (r *mysqlFeiraLivreRepository) UpdateFeiraLivre(iFeiras *models.FeiraLivre) (*models.Response, error) <span class="cov8" title="1">{
+
+        idFeira := iFeiras.ID
+
+        statement := fmt.Sprintf(`UPDATE feira_livre
+        SET longi = %d, lat = %d, setcens = %d, areap = %d, coddist = %d, distrito = '%s', codsubpref = %d, 
+        subprefe = '%s', regiao5 = '%s', regiao8 = '%s', nome_feira = '%s', registro = '%s',
+        logradouro = '%s', numero = '%s', bairro = '%s', referencia = '%s'
+        WHERE id = %d`,
+                iFeiras.Longi, iFeiras.Lat, iFeiras.Setcens, iFeiras.Areap, iFeiras.Coddist, iFeiras.Distrito, iFeiras.Codsubpref,
+                iFeiras.Subprefe, iFeiras.Regiao5, iFeiras.Regiao8, iFeiras.NomeFeira, iFeiras.Registro, iFeiras.Logradouro, iFeiras.Numero,
+                iFeiras.Bairro, iFeiras.Referencia, idFeira)
+
+        _, err := r.Conn.Exec(statement)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov8" title="1">ret := models.Response{
+                Status:  "Success",
+                Mensage: fmt.Sprintf("Registro atualizado com sucesso pelo ID: %d", idFeira),
+        }
+
+        return &amp;ret, nil</span>
+
+}
+
+// UpdateFeiraLivre ...
+func (r *mysqlFeiraLivreRepository) DeleteFeiraLivre(id int64) (*models.Response, error) <span class="cov8" title="1">{
+
+        qry := fmt.Sprintf(`DELETE FROM feira_livre WHERE id = %d`, id)
+
+        ret := models.Response{
+                Status:  "Success",
+                Mensage: fmt.Sprintf("Registro apagado com sucesso pelo ID: %d", id),
+        }
+
+        _, err := r.Conn.Exec(qry)
+        if err != nil </span><span class="cov0" title="0">{
+
+                ret.Status = "Error"
+                ret.Mensage = fmt.Sprintf("Erro ao tentar apagar o registro de ID: %d", id)
+
+                return &amp;ret, err
+        }</span>
+
+        <span class="cov8" title="1">return &amp;ret, nil</span>
+
+}
+</pre>
+		
+		<pre class="file" id="file6" style="display: none">package repositories
+
+import (
+        "github.com/fsvxavier/unico/interfaces"
+        "github.com/fsvxavier/unico/models"
+)
+
+type healthCheckRepository struct {
+}
+
+// NewHealthCheckRepository will create an object that represent the healthCheck.Repository interface
+func NewHealthCheckRepository() interfaces.HealthCheckRepository <span class="cov8" title="1">{
+        return &amp;healthCheckRepository{}
+}</span>
+
+func (m *healthCheckRepository) Check() (*models.HealthCheck, error) <span class="cov8" title="1">{
+        a := &amp;models.HealthCheck{}
+        dbUp := "up"
+        a.DbUP = dbUp
+        return a, nil
+}</span>
+</pre>
+		
+		<pre class="file" id="file7" style="display: none">package usecases
+
+import (
+        "errors"
+
+        "github.com/fsvxavier/unico/interfaces"
+        "github.com/fsvxavier/unico/models"
+)
+
+type FeiraLivreUseCase struct {
+        FeiraLivreRepo interfaces.FeiraLivreRepository
+}
+
+//NewFeiraLivreUseCase will create a new a arquivoPostgresUseCase object representation of usecase.ArquivoPostgresUseCase interfaces
+func NewFeiraLivreUseCase(i interfaces.FeiraLivreRepository) interfaces.FeiraLivreUseCase <span class="cov8" title="1">{
+        return &amp;FeiraLivreUseCase{
+                FeiraLivreRepo: i,
+        }
+}</span>
+
+// GetAllByIds ...
+func (u *FeiraLivreUseCase) GetAllByIds(ids string) ([]*models.FeiraLivre, error) <span class="cov8" title="1">{
+        record, err := u.FeiraLivreRepo.GetAllByIds(ids)
+        if err != nil </span><span class="cov8" title="1">{
+                return nil, err
+        }</span>
+        <span class="cov8" title="1">return record, err</span>
+}
+
+// GetByID ...
+func (u *FeiraLivreUseCase) GetByID(id int64) ([]*models.FeiraLivre, error) <span class="cov8" title="1">{
+        record, err := u.FeiraLivreRepo.GetByID(id)
+        if err != nil </span><span class="cov8" title="1">{
+                return nil, errors.New(err.Error())
+        }</span>
+        <span class="cov8" title="1">return record, err</span>
+}
+
+// CreateFeiraLivre ...
+func (u *FeiraLivreUseCase) CreateFeiraLivre(iFeiras *models.FeiraLivre) (*models.Response, error) <span class="cov8" title="1">{
+        ret, err := u.FeiraLivreRepo.CreateFeiraLivre(iFeiras)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, errors.New(err.Error())
+        }</span>
+        <span class="cov8" title="1">return ret, nil</span>
+}
+
+// UpdateFeiraLivre ...
+func (u *FeiraLivreUseCase) UpdateFeiraLivre(iFeiras *models.FeiraLivre) (*models.Response, error) <span class="cov8" title="1">{
+        ret, err := u.FeiraLivreRepo.UpdateFeiraLivre(iFeiras)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, errors.New(err.Error())
+        }</span>
+        <span class="cov8" title="1">return ret, nil</span>
+}
+
+// SearchFeiraLivre ...
+func (u *FeiraLivreUseCase) SearchFeiraLivre(sFeiras *models.SearchFeiraLivre) ([]*models.FeiraLivre, error) <span class="cov8" title="1">{
+        ret, err := u.FeiraLivreRepo.SearchFeiraLivre(sFeiras)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, errors.New(err.Error())
+        }</span>
+        <span class="cov8" title="1">return ret, nil</span>
+}
+
+// DeleteFeiraLivre ...
+func (u *FeiraLivreUseCase) DeleteFeiraLivre(id int64) (*models.Response, error) <span class="cov8" title="1">{
+        ret, err := u.FeiraLivreRepo.DeleteFeiraLivre(id)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, errors.New(err.Error())
+        }</span>
+        <span class="cov8" title="1">return ret, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file8" style="display: none">package usecases
+
+import (
+        "github.com/fsvxavier/unico/interfaces"
+        "github.com/fsvxavier/unico/models"
+)
+
+type healthcheckUseCase struct {
+        healthcheckRepo interfaces.HealthCheckRepository
+}
+
+//NewHealthCheckUseCase will create new an healthcheckUsecase object representation of usecase.HealthCheckUsecase interface
+func NewHealthCheckUseCase(h interfaces.HealthCheckRepository) interfaces.HealthCheckUseCase <span class="cov8" title="1">{
+        return &amp;healthcheckUseCase{
+                healthcheckRepo: h,
+        }
+}</span>
+
+func (h *healthcheckUseCase) Check() (*models.HealthCheck, error) <span class="cov8" title="1">{
+        res, err := h.healthcheckRepo.Check()
+        if err != nil </span><span class="cov8" title="1">{
+                return nil, err
+        }</span>
+        <span class="cov8" title="1">return res, nil</span>
+}
+</pre>
+		
+		</div>
+	</body>
+	<script>
+	(function() {
+		var files = document.getElementById('files');
+		var visible;
+		files.addEventListener('change', onChange, false);
+		function select(part) {
+			if (visible)
+				visible.style.display = 'none';
+			visible = document.getElementById(part);
+			if (!visible)
+				return;
+			files.value = part;
+			visible.style.display = 'block';
+			location.hash = part;
+		}
+		function onChange() {
+			select(files.value);
+			window.scrollTo(0, 0);
+		}
+		if (location.hash != "") {
+			select(location.hash.substr(1));
+		}
+		if (!visible) {
+			select("file0");
+		}
+	})();
+	</script>
+</html>

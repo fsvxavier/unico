@@ -1,0 +1,18 @@
+# Use root/example as user/password credentials
+version: '3.1'
+
+services:
+
+  db:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password --init-file /data/application/init.sql
+    volumes:
+        - ../../migrations/init.sql:/data/application/init.sql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: unico
+      MYSQL_DATABASE: unico
+      MYSQL_USER: unico
+      MYSQL_PASSWORD: unico
+    ports:
+      - '3306:3306'
