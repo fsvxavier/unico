@@ -3,7 +3,6 @@ package api
 import (
 	"net/http"
 	"net/http/httptest"
-	"os"
 	"testing"
 
 	middleware "github.com/fsvxavier/unico/middlewares"
@@ -32,8 +31,6 @@ func TestInitializeSuccess(t *testing.T) {
 		var logger util.GenericLogger
 		logger.Module = "server"
 		logger.GetLogger()
-
-		os.Setenv("NEW_RELIC_ACTIVE", "false")
 
 		server.Route = gin.New()
 		server.Route.Use(middleware.Logger(logger.Log.Logger))
