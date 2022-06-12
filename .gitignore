@@ -4,6 +4,7 @@ vendor/
 .idea
 debug
 .scannerwork
+.lh/
 .history
 go.sum
 */env.json
